@@ -409,28 +409,3 @@ if uploaded_file is not None:
             else:
 
                 st.info("No emojis found in this chat.")
-
-        # =====================================
-        # FOOTER
-        # =====================================
-
-        st.divider()
-
-        st.markdown(
-            """
-            <div style="text-align:center;padding:20px;">
-                <h4 style="color:#128C7E;">
-                    📱 WhatsApp Chat Analyzer
-                </h4>
-
-                <p style="color:gray;">
-                    Built with ❤️ by <b>Himank Singhal</b>
-                </p>
-
-                <p style="color:gray;">
-                    Python • Pandas • Streamlit • NLP
-                </p>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
