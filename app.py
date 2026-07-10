@@ -314,10 +314,10 @@ if uploaded_file is not None:
                 st.markdown("### 📋 Ranking")
 
                 st.dataframe(
-                    new_df,
-                    use_container_width=True,
-                    hide_index=True
-                )
+    new_df,
+    width="stretch",
+    hide_index=True
+)
 
         # =====================================
         # WORD CLOUD
@@ -386,10 +386,10 @@ if uploaded_file is not None:
             st.markdown("### Emoji Frequency")
 
             st.dataframe(
-                emoji_df,
-                use_container_width=True,
-                hide_index=True
-            )
+    emoji_df,
+    width="stretch",
+    hide_index=True
+)
 
         with col2:
 
