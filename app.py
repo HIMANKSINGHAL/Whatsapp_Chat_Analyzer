@@ -162,7 +162,7 @@ if uploaded_file is not None:
 
         plt.xticks(rotation=45)
 
-        st.pyplot(fig, use_container_width=True)
+        st.pyplot(fig, width="stretch")
 
         st.divider()
 
@@ -190,7 +190,7 @@ if uploaded_file is not None:
 
         plt.xticks(rotation=45)
 
-        st.pyplot(fig, use_container_width=True)
+        st.pyplot(fig, width="stretch")
 
         st.divider()
 
@@ -227,7 +227,7 @@ if uploaded_file is not None:
 
             plt.xticks(rotation=45)
 
-            st.pyplot(fig, use_container_width=True)
+            st.pyplot(fig, width="stretch")
 
         with col2:
 
@@ -252,7 +252,7 @@ if uploaded_file is not None:
 
             plt.xticks(rotation=45)
 
-            st.pyplot(fig, use_container_width=True)
+            st.pyplot(fig, width="stretch")
 
         # =====================================
         # WEEKLY ACTIVITY HEATMAP
@@ -278,7 +278,7 @@ if uploaded_file is not None:
 
         plt.xticks(rotation=45)
 
-        st.pyplot(fig, use_container_width=True)
+        st.pyplot(fig, width="stretch")
 
         # =====================================
         # MOST ACTIVE USERS
@@ -308,7 +308,7 @@ if uploaded_file is not None:
 
                 plt.xticks(rotation=45)
 
-                st.pyplot(fig, use_container_width=True)
+                st.pyplot(fig, width="stretch")
 
             with col2:
                 st.markdown("### 📋 Ranking")
@@ -335,7 +335,8 @@ if uploaded_file is not None:
 
         ax.axis("off")
 
-        st.pyplot(fig, use_container_width=True)
+        st.pyplot(fig, width="stretch")
+
 
         # =====================================
         # MOST COMMON WORDS
@@ -362,7 +363,8 @@ if uploaded_file is not None:
 
         ax.grid(axis="x", alpha=.3)
 
-        st.pyplot(fig, use_container_width=True)
+        st.pyplot(fig, width="stretch")
+
 
         # =====================================
         # EMOJI ANALYSIS
@@ -404,7 +406,7 @@ if uploaded_file is not None:
 
                 ax.axis("equal")
 
-                st.pyplot(fig, use_container_width=True)
+                st.pyplot(fig, width="stretch")
 
             else:
 
