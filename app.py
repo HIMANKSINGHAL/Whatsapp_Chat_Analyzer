@@ -331,13 +331,13 @@ if uploaded_file is not None:
 
         df_wc = helper.create_wordcloud(selected_user, df)
 
-        fig, ax = plt.subplots(figsize=(10, 5))
-
-        ax.imshow(df_wc)
-
-        ax.axis("off")
-
-        st.pyplot(fig, width="stretch")
+        if df_wc is not None:
+            fig, ax = plt.subplots(figsize=(10, 5))
+            ax.imshow(df_wc)
+            ax.axis("off")
+            st.pyplot(fig, width="stretch")
+        else:
+            st.warning("Not enough text to generate a Word Cloud.")
 
 
         # =====================================
