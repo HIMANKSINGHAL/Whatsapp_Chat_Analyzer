@@ -167,12 +167,29 @@ def activity_heatmap(selected_user, df):
     if selected_user != "Overall":
         df = df[df["user"] == selected_user]
 
-    return (
-        df.pivot_table(
-            index="day_name",
-            columns="period",
-            values="message",
-            aggfunc="count"
-        )
-        .fillna(0)
+    if df.empty:
+        return pd.DataFrame()
+
+    user_heatmap = pd.pivot_table(
+        data=df,
+        index="day_name",
+        columns="period",
+        values="message",
+        aggfunc="count",
+        fill_value=0
     )
+
+    # Order the weekdays
+    days = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+    ]
+
+    user_heatmap = user_heatmap.reindex(days)
+
+    return user_heatmap
