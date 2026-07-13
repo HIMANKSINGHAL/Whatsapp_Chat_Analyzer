@@ -393,15 +393,22 @@ if uploaded_file is not None:
 
             if not emoji_df.empty:
 
-                fig, ax = plt.subplots(figsize=(6, 6))
+                 fig, ax = plt.subplots(figsize=(6, 6))
 
-                ax.pie(
-                    emoji_df["Count"].head(),
-                    labels=emoji_df["Emoji"].head(),
-                    autopct="%1.1f%%",
-                    startangle=90
+                    top_emojis = emoji_df.head()
+
+                    wedges, _, _ = ax.pie(
+                        top_emojis["Count"],
+                        autopct="%1.1f%%",
+                        startangle=90
                 )
-
+                ax.legend(
+                        wedges,
+                        [f"#{i+1} ({c})" for i, c in enumerate(top_emojis["Count"])],
+                        title="Emoji",
+                        loc="center left",
+                        bbox_to_anchor=(1, 0, 0.5, 1)
+                    )
                 ax.axis("equal")
 
                 st.pyplot(fig, use_container_width=True)
