@@ -6,147 +6,214 @@ import emoji
 
 extract = URLExtract()
 
-def fetch_stats(selected_user,df):
 
-    if selected_user != 'Overall':
-        df = df[df['user'] == selected_user]
+def strip_emoji(text):
+    """
+    Remove emoji characters from text.
 
-    # fetch the number of messages
+    matplotlib's default font (DejaVu Sans) has no emoji glyphs, and its
+    Agg/FreeType backend can segfault (rather than just warn) when asked to
+    rasterize one. Anything that ends up as a chart label/tick (usernames,
+    word-frequency tokens, etc.) needs to go through this first. Emoji are
+    still shown correctly in Streamlit's own HTML tables/text, since those
+    render in the browser, not through matplotlib.
+    """
+    return emoji.replace_emoji(str(text), replace="").strip()
+
+
+def fetch_stats(selected_user, df):
+
+    if selected_user != "Overall":
+        df = df[df["user"] == selected_user]
+
     num_messages = df.shape[0]
 
-    # fetch the total number of words
     words = []
-    for message in df['message']:
+    for message in df["message"]:
         words.extend(message.split())
 
-    # fetch number of media messages
-    num_media_messages = df[df['message'] == '<Media omitted>\n'].shape[0]
+    num_media_messages = df[df["message"] == "<Media omitted>\n"].shape[0]
 
-    # fetch number of links shared
     links = []
-    for message in df['message']:
+    for message in df["message"]:
         links.extend(extract.find_urls(message))
 
-    return num_messages,len(words),num_media_messages,len(links)
+    return num_messages, len(words), num_media_messages, len(links)
+
 
 def most_busy_users(df):
-    x = df['user'].value_counts().head()
-    df = round((df['user'].value_counts() / df.shape[0]) * 100, 2).reset_index().rename(
-        columns={'index': 'name', 'user': 'percent'})
-    return x,df
 
-def create_wordcloud(selected_user,df):
+    x = df["user"].value_counts().head()
 
-    f = open('stop_hinglish.txt', 'r')
-    stop_words = f.read()
+    # Display names often contain emoji (e.g. "Priya 💕"); keep the original
+    # names for the table, but give charts a version matplotlib can safely
+    # render. Fall back to the original name if stripping empties it out.
+    x_chart = x.copy()
+    x_chart.index = [strip_emoji(name) or name for name in x.index]
 
-    if selected_user != 'Overall':
-        df = df[df['user'] == selected_user]
+    new_df = (
+        round((df["user"].value_counts() / df.shape[0]) * 100, 2)
+        .reset_index()
+    )
+    new_df.columns = ["User", "Percent"]
 
-    temp = df[df['user'] != 'group_notification']
-    temp = temp[temp['message'] != '<Media omitted>\n']
+    return x, x_chart, new_df
+
+
+def create_wordcloud(selected_user, df):
+
+    with open("stop_hinglish.txt", "r", encoding="utf-8") as f:
+        stop_words = set(f.read().split())
+
+    if selected_user != "Overall":
+        df = df[df["user"] == selected_user]
+
+    temp = df[df["user"] != "group_notification"]
+    temp = temp[temp["message"] != "<Media omitted>\n"].copy()
 
     def remove_stop_words(message):
-        y = []
-        for word in message.lower().split():
-            if word not in stop_words:
-                y.append(word)
-        return " ".join(y)
+        return " ".join(
+            word
+            for word in message.lower().split()
+            if word not in stop_words
+        )
 
-    wc = WordCloud(width=500,height=500,min_font_size=10,background_color='white')
-    temp['message'] = temp['message'].apply(remove_stop_words)
-    df_wc = wc.generate(temp['message'].str.cat(sep=" "))
-    return df_wc
+    temp["message"] = temp["message"].apply(remove_stop_words)
 
-def most_common_words(selected_user,df):
+    text = temp["message"].str.cat(sep=" ").strip()
 
-    f = open('stop_hinglish.txt','r')
-    stop_words = f.read()
+    if text == "":
+        return None
 
-    if selected_user != 'Overall':
-        df = df[df['user'] == selected_user]
+    wc = WordCloud(
+        width=500,
+        height=500,
+        min_font_size=10,
+        background_color="white"
+    )
 
-    temp = df[df['user'] != 'group_notification']
-    temp = temp[temp['message'] != '<Media omitted>\n']
+    return wc.generate(text)
+
+
+def most_common_words(selected_user, df):
+
+    with open("stop_hinglish.txt", "r", encoding="utf-8") as f:
+        stop_words = set(f.read().split())
+
+    if selected_user != "Overall":
+        df = df[df["user"] == selected_user]
+
+    temp = df[df["user"] != "group_notification"]
+    temp = temp[temp["message"] != "<Media omitted>\n"]
 
     words = []
 
-    for message in temp['message']:
+    for message in temp["message"]:
         for word in message.lower().split():
             if word not in stop_words:
-                words.append(word)
+                # Strip emoji so a token like "word😊" or a lone emoji
+                # can't reach matplotlib as a chart label (see strip_emoji).
+                clean_word = strip_emoji(word)
+                if clean_word:
+                    words.append(clean_word)
 
-    most_common_df = pd.DataFrame(Counter(words).most_common(20))
-    return most_common_df
+    return pd.DataFrame(Counter(words).most_common(20))
+
 
 def emoji_helper(selected_user, df):
 
-    if selected_user != 'Overall':
-        df = df[df['user'] == selected_user]
+    if selected_user != "Overall":
+        df = df[df["user"] == selected_user]
 
     emojis = []
 
-    for message in df['message']:
-        emojis.extend([char for char in message if char in emoji.EMOJI_DATA])
+    for message in df["message"]:
+        emojis.extend(
+            [char for char in message if char in emoji.EMOJI_DATA]
+        )
 
     emoji_df = pd.DataFrame(
         Counter(emojis).most_common(),
-        columns=['Emoji', 'Count']
+        columns=["Emoji", "Count"]
     )
 
     return emoji_df
 
-    emojis = []
-    for message in df['message']:
-        emojis.extend([c for c in message if c in emoji.EMOJI_DATA])
 
-    emoji_df = pd.DataFrame(Counter(emojis).most_common(len(Counter(emojis))))
+def monthly_timeline(selected_user, df):
 
-    return emoji_df
+    if selected_user != "Overall":
+        df = df[df["user"] == selected_user]
 
-def monthly_timeline(selected_user,df):
+    timeline = (
+        df.groupby(["year", "month_num", "month"])
+        .count()["message"]
+        .reset_index()
+    )
 
-    if selected_user != 'Overall':
-        df = df[df['user'] == selected_user]
-
-    timeline = df.groupby(['year', 'month_num', 'month']).count()['message'].reset_index()
-
-    time = []
-    for i in range(timeline.shape[0]):
-        time.append(timeline['month'][i] + "-" + str(timeline['year'][i]))
-
-    timeline['time'] = time
+    timeline["time"] = (
+        timeline["month"] + "-" + timeline["year"].astype(str)
+    )
 
     return timeline
 
-def daily_timeline(selected_user,df):
 
-    if selected_user != 'Overall':
-        df = df[df['user'] == selected_user]
+def daily_timeline(selected_user, df):
 
-    daily_timeline = df.groupby('only_date').count()['message'].reset_index()
+    if selected_user != "Overall":
+        df = df[df["user"] == selected_user]
 
-    return daily_timeline
+    return (
+        df.groupby("only_date")
+        .count()["message"]
+        .reset_index()
+    )
 
-def week_activity_map(selected_user,df):
 
-    if selected_user != 'Overall':
-        df = df[df['user'] == selected_user]
+def week_activity_map(selected_user, df):
 
-    return df['day_name'].value_counts()
+    if selected_user != "Overall":
+        df = df[df["user"] == selected_user]
 
-def month_activity_map(selected_user,df):
+    return df["day_name"].value_counts()
 
-    if selected_user != 'Overall':
-        df = df[df['user'] == selected_user]
 
-    return df['month'].value_counts()
+def month_activity_map(selected_user, df):
 
-def activity_heatmap(selected_user,df):
+    if selected_user != "Overall":
+        df = df[df["user"] == selected_user]
 
-    if selected_user != 'Overall':
-        df = df[df['user'] == selected_user]
+    return df["month"].value_counts()
 
-    user_heatmap = df.pivot_table(index='day_name', columns='period', values='message', aggfunc='count').fillna(0)
+
+def activity_heatmap(selected_user, df):
+
+    if selected_user != "Overall":
+        df = df[df["user"] == selected_user]
+
+    if df.empty:
+        return pd.DataFrame()
+
+    user_heatmap = pd.pivot_table(
+        data=df,
+        index="day_name",
+        columns="period",
+        values="message",
+        aggfunc="count",
+        fill_value=0
+    )
+
+    # Order the weekdays
+    days = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+    ]
+
+    user_heatmap = user_heatmap.reindex(days)
 
     return user_heatmap
