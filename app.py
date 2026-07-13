@@ -303,7 +303,7 @@ if uploaded_file is not None:
     
                 st.subheader("👥 Most Active Users")
     
-                x, new_df = helper.most_busy_users(df)
+                x, x_chart, new_df = helper.most_busy_users(df)
     
                 col1, col2 = st.columns([2, 1])
     
@@ -311,8 +311,8 @@ if uploaded_file is not None:
                     fig, ax = plt.subplots(figsize=(8, 4))
     
                     ax.bar(
-                        x.index,
-                        x.values,
+                        x_chart.index,
+                        x_chart.values,
                         color="#25D366"
                     )
     
