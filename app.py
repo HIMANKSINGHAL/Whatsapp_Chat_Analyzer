@@ -1,10 +1,22 @@
+import faulthandler
+import sys
+faulthandler.enable()
+
+print("DEBUG: starting imports", file=sys.stderr)
 import matplotlib
+print("DEBUG: matplotlib imported", file=sys.stderr)
 matplotlib.use("Agg")
+print("DEBUG: matplotlib.use(Agg) done", file=sys.stderr)
 import streamlit as st
+print("DEBUG: streamlit imported", file=sys.stderr)
 import preprocessor
+print("DEBUG: preprocessor imported", file=sys.stderr)
 import helper
+print("DEBUG: helper imported", file=sys.stderr)
 import matplotlib.pyplot as plt
+print("DEBUG: matplotlib.pyplot imported", file=sys.stderr)
 import seaborn as sns
+print("DEBUG: seaborn imported", file=sys.stderr)
 
 # ==============================
 # PAGE CONFIG
