@@ -1,0 +1,3 @@
+libgomp1
+libfreetype6
+libraqm2
