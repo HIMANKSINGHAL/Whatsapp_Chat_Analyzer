@@ -12,7 +12,8 @@ The application helps users analyze chat activity, identify communication patter
 ## 🚀 Demo
 
 > Upload an exported WhatsApp chat (.txt) and instantly generate a complete analytical dashboard.
->https://whatsappchatanalyzer-dmngecd6xylyekfw2bmsyz.streamlit.app
+> https://whatsappchatanalyzer-dmngecd6xylyekfw2bmsyz.streamlit.app
+> for demo copy the above link and paste it on your browser
 
 ---
 
