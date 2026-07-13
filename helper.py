@@ -34,8 +34,8 @@ def most_busy_users(df):
     new_df = (
         round((df["user"].value_counts() / df.shape[0]) * 100, 2)
         .reset_index()
-        .rename(columns={"index": "User", "user": "Percent"})
     )
+    new_df.columns = ["User", "Percent"]
 
     return x, new_df
 
