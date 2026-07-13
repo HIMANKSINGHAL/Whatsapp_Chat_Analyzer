@@ -164,7 +164,7 @@ if uploaded_file is not None:
     
             plt.xticks(rotation=45)
     
-            st.pyplot(fig, width="stretch")
+            st.pyplot(fig, use_container_width=True)
     
             st.divider()
     
@@ -192,7 +192,7 @@ if uploaded_file is not None:
     
             plt.xticks(rotation=45)
     
-            st.pyplot(fig, width="stretch")
+            st.pyplot(fig, use_container_width=True)
     
             st.divider()
     
@@ -229,7 +229,7 @@ if uploaded_file is not None:
     
                 plt.xticks(rotation=45)
     
-                st.pyplot(fig, width="stretch")
+                st.pyplot(fig, use_container_width=True)
     
             with col2:
     
@@ -254,7 +254,7 @@ if uploaded_file is not None:
     
                 plt.xticks(rotation=45)
     
-                st.pyplot(fig, width="stretch")
+                st.pyplot(fig, use_container_width=True)
     
             # =====================================
             # WEEKLY ACTIVITY HEATMAP
@@ -322,14 +322,14 @@ if uploaded_file is not None:
     
                     plt.xticks(rotation=45)
     
-                    st.pyplot(fig, width="stretch")
+                    st.pyplot(fig, use_container_width=True)
     
                 with col2:
                     st.markdown("### 📋 Ranking")
     
                     st.dataframe(
         new_df,
-        width="stretch",
+        use_container_width=True,
         hide_index=True
     )
     
@@ -347,7 +347,7 @@ if uploaded_file is not None:
                 fig, ax = plt.subplots(figsize=(10, 5))
                 ax.imshow(df_wc)
                 ax.axis("off")
-                st.pyplot(fig, width="stretch")
+                st.pyplot(fig, use_container_width=True)
             else:
                 st.warning("Not enough text to generate a Word Cloud.")
     
@@ -377,7 +377,7 @@ if uploaded_file is not None:
     
             ax.grid(axis="x", alpha=.3)
     
-            st.pyplot(fig, width="stretch")
+            st.pyplot(fig, use_container_width=True)
     
     
             # =====================================
@@ -401,7 +401,7 @@ if uploaded_file is not None:
     
                 st.dataframe(
         emoji_df,
-        width="stretch",
+        use_container_width=True,
         hide_index=True
     )
     
@@ -420,7 +420,7 @@ if uploaded_file is not None:
     
                     ax.axis("equal")
     
-                    st.pyplot(fig, width="stretch")
+                    st.pyplot(fig, use_container_width=True)
     
                 else:
     
